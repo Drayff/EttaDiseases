@@ -1,0 +1,4 @@
+name: EttaDiseases
+version: '${project.version}'
+main: online.ettarp.ettadiseases.EttaDiseases
+api-version: '1.20'
