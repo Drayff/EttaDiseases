@@ -2,3 +2,8 @@ name: EttaDiseases
 version: '${project.version}'
 main: online.ettarp.ettadiseases.EttaDiseases
 api-version: '1.20'
+
+commands:
+  disease:
+    description: "Команда для заражения и излечения игроков."
+    usage: /disease
