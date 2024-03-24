@@ -27,9 +27,8 @@
 
 ## Команды
 
-- **/virus infect [Target] [Disease Name]**: Заразить цель.
-- **/virus cure [Target]**: Удалить вирус с указанной цели.
-- **/virus reload**: Перезагрузить доступные вирусы на сервере.
+- **/disease infect [Target] [Disease Name]**: Заразить цель.
+- **/disease cure [Target]**: Удалить вирус с указанной цели.
 
 ## Авторы
 
