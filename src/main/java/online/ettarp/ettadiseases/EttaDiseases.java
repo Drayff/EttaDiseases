@@ -4,14 +4,12 @@ import online.ettarp.ettadiseases.commands.DiseaseCommand;
 import online.ettarp.ettadiseases.commands.DiseaseCompleter;
 import online.ettarp.ettadiseases.db.DBHandler;
 import online.ettarp.ettadiseases.listeners.PlayerAttackInfected;
-import org.bukkit.entity.Player;
+import online.ettarp.ettadiseases.runnable.EffectsGiverTask;
+import online.ettarp.ettadiseases.runnable.IncubationTask;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Statement;
-
 public final class EttaDiseases extends JavaPlugin {
     DBHandler handler;
 
@@ -25,25 +23,9 @@ public final class EttaDiseases extends JavaPlugin {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        BukkitRunnable incubation = new BukkitRunnable() {
-            @Override
-            public void run() {
-                try {
-                    Statement statement = getConnection().createStatement();
 
-                    for(Player player : getServer().getOnlinePlayers()) {
-                        if(statement.executeQuery("SELECT * FROM infected WHERE nickname = '" + player.getName() + "'").next()) {
-                            statement.execute("UPDATE infected SET incubation = incubation - 1 WHERE incubation > 0 AND nickname = '" + player.getName() + "';");
-                        }
-                    }
-                    statement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-
-        incubation.runTaskTimerAsynchronously(this, 0, 60*20);
+        new IncubationTask(this).runTaskTimerAsynchronously(this, 0, 60*20);
+        new EffectsGiverTask(this).runTaskTimerAsynchronously(this, 0, 60*5*20);
 
         getCommand("disease").setExecutor(new DiseaseCommand(this));
         getCommand("disease").setTabCompleter(new DiseaseCompleter(this));
