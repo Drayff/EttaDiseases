@@ -32,22 +32,26 @@ public class PlayerAttackInfected implements Listener {
             Player infected = (Player) event.getEntity();
             plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
                 try {
-                    PreparedStatement statement = connection.prepareStatement("SELECT * FROM infected WHERE nickname = ?");
-                    statement.setString(1, infected.getName());
-                    ResultSet resultSet = statement.executeQuery();
+                    PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM infected WHERE nickname = ?");
+                    preparedStatement.setString(1, infected.getName());
+                    ResultSet resultSet = preparedStatement.executeQuery();
 
-                    if (resultSet.next()) {
+                    PreparedStatement preparedStatement2 = connection.prepareStatement("SELECT * FROM infected WHERE nickname = ?");
+                    preparedStatement2.setString(1, attacker.getName());
+                    ResultSet resultSet2 = preparedStatement2.executeQuery();
+
+                    if (resultSet.next() && !resultSet2.next()) {
                         int chance = random.nextInt(100);
                         int transferChance = plugin.getConfig().getInt("diseases." + resultSet.getString("disease") + ".transfer-chance");
 
                         if (chance < transferChance) {
-                            PreparedStatement statement2 = connection.prepareStatement("INSERT INTO infected(nickname, disease, incubation) VALUES (?, ?, ?)");
+                            PreparedStatement statement = connection.prepareStatement("INSERT INTO infected(nickname, disease, incubation) VALUES (?, ?, ?)");
 
-                            statement2.setString(1, attacker.getName());
-                            statement2.setString(2, resultSet.getString("disease"));
-                            statement2.setInt(3, plugin.getConfig().getInt("diseases." + resultSet.getString("disease") + ".incubation-time"));
+                            statement.setString(1, attacker.getName());
+                            statement.setString(2, resultSet.getString("disease"));
+                            statement.setInt(3, plugin.getConfig().getInt("diseases." + resultSet.getString("disease") + ".incubation-time"));
 
-                            statement2.execute();
+                            statement.execute();
                         }
                     }
                 } catch (SQLException e) {
