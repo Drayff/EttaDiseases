@@ -1,6 +1,7 @@
 package online.ettarp.ettadiseases;
 
 import online.ettarp.ettadiseases.commands.DiseaseCommand;
+import online.ettarp.ettadiseases.commands.DiseaseCompleter;
 import online.ettarp.ettadiseases.db.DBHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,6 +46,7 @@ public final class EttaDiseases extends JavaPlugin {
         incubation.runTaskTimerAsynchronously(this, 0, 60*20);
 
         getCommand("disease").setExecutor(new DiseaseCommand(this));
+        getCommand("disease").setTabCompleter(new DiseaseCompleter(this));
     }
 
     @Override
