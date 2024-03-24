@@ -3,6 +3,7 @@ package online.ettarp.ettadiseases;
 import online.ettarp.ettadiseases.commands.DiseaseCommand;
 import online.ettarp.ettadiseases.commands.DiseaseCompleter;
 import online.ettarp.ettadiseases.db.DBHandler;
+import online.ettarp.ettadiseases.listeners.PlayerAttackInfected;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -42,11 +43,12 @@ public final class EttaDiseases extends JavaPlugin {
             }
         };
 
-        // Запускаем задачи с интервалом, в тиках (1 секунда = 20 тиков)
         incubation.runTaskTimerAsynchronously(this, 0, 60*20);
 
         getCommand("disease").setExecutor(new DiseaseCommand(this));
         getCommand("disease").setTabCompleter(new DiseaseCompleter(this));
+
+        getServer().getPluginManager().registerEvents(new PlayerAttackInfected(this), this);
     }
 
     @Override
