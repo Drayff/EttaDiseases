@@ -30,6 +30,11 @@ public class DiseaseCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Player player = (Player) sender;
+
+        if(!player.hasPermission("disease.disease")) {
+            player.sendMessage("У вас нет прав на выполнение этой команды.");
+            return true;
+        }
         Statement statement;
         String target;
 
