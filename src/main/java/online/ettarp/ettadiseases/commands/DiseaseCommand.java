@@ -35,6 +35,7 @@ public class DiseaseCommand implements CommandExecutor {
             player.sendMessage("У вас нет прав на выполнение этой команды.");
             return true;
         }
+
         Statement statement;
         String target;
 
