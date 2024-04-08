@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -29,10 +28,8 @@ public class DiseaseCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        Player player = (Player) sender;
-
-        if(!player.hasPermission("disease.disease")) {
-            player.sendMessage("У вас нет прав на выполнение этой команды.");
+        if(!sender.hasPermission("disease.disease")) {
+            sender.sendMessage("У вас нет прав на выполнение этой команды.");
             return true;
         }
 
@@ -45,8 +42,9 @@ public class DiseaseCommand implements CommandExecutor {
             throw new RuntimeException(e);
         }
 
-        if (args.length == 0) {
-            player.sendMessage("Использование: /disease [infect, cure] <Target> <Disease Name>.");
+        if (args == null || args.length == 0) {
+            sender.sendMessage("Использование: /disease [infect, cure] <Target> <Disease Name>.");
+            return true;
         }
 
         switch (args[0]) {
@@ -56,17 +54,17 @@ public class DiseaseCommand implements CommandExecutor {
                 target = args[1];
 
                 if (args.length != 3) {
-                    player.sendMessage("Использование: /disease infect <Target> <Disease Name>.");
+                    sender.sendMessage("Использование: /disease infect <Target> <Disease Name>.");
                     return true;
                 }
 
                 if (!Arrays.asList(diseases).contains(disease)) {
-                    player.sendMessage("Такой болезни не существует.");
+                    sender.sendMessage("Такой болезни не существует.");
                     return true;
                 }
 
                 if (Bukkit.getPlayer(target) == null) {
-                    player.sendMessage("Игрок не онлайн.");
+                    sender.sendMessage("Игрок не онлайн.");
                     return true;
                 }
 
@@ -83,9 +81,9 @@ public class DiseaseCommand implements CommandExecutor {
 
                             ps.execute();
 
-                            player.sendMessage("Игрок успешно заражён.");
+                            sender.sendMessage("Игрок успешно заражён.");
                         } else {
-                            player.sendMessage("Игрок уже заражён.");
+                            sender.sendMessage("Игрок уже заражён.");
                         }
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
@@ -98,12 +96,12 @@ public class DiseaseCommand implements CommandExecutor {
                 target = args[1];
 
                 if (args.length != 2) {
-                    player.sendMessage("Использование: /disease cure <Target>.");
+                    sender.sendMessage("Использование: /disease cure <Target>.");
                     return true;
                 }
 
                 if (Bukkit.getPlayer(target) == null) {
-                    player.sendMessage("Игрок не онлайн.");
+                    sender.sendMessage("Игрок не онлайн.");
                     return true;
                 }
 
@@ -117,7 +115,7 @@ public class DiseaseCommand implements CommandExecutor {
 
                         ps.execute();
 
-                        player.sendMessage("Игрок успешно вылечен.");
+                        sender.sendMessage("Игрок успешно вылечен.");
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
